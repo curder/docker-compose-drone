@@ -2,47 +2,41 @@ version: "3"
 services:
   drone-server:
     container_name: drone-server
-    image: drone/drone
+    image: drone/drone:latest
     ports:
-      - "${HTTP_PORT}:80"
-      - "${SSH_PORT}:443"
-      - 9000
+      - 10080:80
+      - 10443:443
     volumes:
       - ./data/drone:/var/lib/drone/:rw
     restart: always
-    env_file:
-      - .env
     environment:
+      # https://docs.drone.io/reference/server/
       - DRONE_OPEN=true
+      - DRONE_AGENTS_ENABLED=true
       - DRONE_GOGS=true
       - DRONE_PROVIDER=gogs
       - DRONE_GOGS_SKIP_VERIFY=false
       - DRONE_GIT_ALWAYS_AUTH=false
-      - DRONE_GOGS_SERVER=${DRONE_GOGS_SERVER}
-      - DRONE_RUNNER_CAPACITY=2
-      - DRONE_SERVER_HOST=${DRONE_SERVER_HOST}
-      - DRONE_SERVER_PROTO=${DRONE_SERVER_PROTO}
+      - DRONE_GOGS_SERVER=http://192.168.11.20:3000
+      - DRONE_SERVER_HOST=192.168.11.20:10080
+      - DRONE_SERVER_PROTO=http
       - DRONE_TLS_AUTOCERT=false
+      - DRONE_USER_CREATE=username:curder,admin:true
+      - DRONE_RPC_SECRET=jEsjIqrs5Sz6U9qocuUUkYq9D038ECOQ9FjwgLWohHBEJMmbYHJE22ZXSf7G5AQw
       - DRONE_DATABASE_DATASOURCE=/var/lib/drone/drone.sqlite
       - DRONE_DATABASE_DRIVER=sqlite3
 
   drone-agent:
     container_name: drone-agent
-    image: drone/agent
+    image: drone/agent:latest
     restart: always
-    env_file:
-      - .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DRONE_RPC_SERVER=${DRONE_RPC_SERVER}
-      - DRONE_RPC_SECRET=${DRONE_SECRET}
-      - DRONE_RUNNER_CAPACITY=2
+      # https://docs.drone.io/runners/docker/reference/
+      - DRONE_RPC_SERVER=http://192.168.11.20:10080
+      - DRONE_RPC_SECRET=jEsjIqrs5Sz6U9qocuUUkYq9D038ECOQ9FjwgLWohHBEJMmbYHJE22ZXSf7G5AQw
       - DRONE_DEBUG=true
-      - DRONE_SERVER=drone-server:9000
-      - DRONE_SECRET=${DRONE_SECRET}
-      - DRONE_MAX_PROCS=5
-      - TZ=Asia/Shanghai
     restart: always
     depends_on:
       - drone-server
