@@ -36,6 +36,7 @@ services:
       # https://docs.drone.io/runners/docker/reference/
       - DRONE_RPC_SERVER=http://192.168.11.20:10080
       - DRONE_RPC_SECRET=jEsjIqrs5Sz6U9qocuUUkYq9D038ECOQ9FjwgLWohHBEJMmbYHJE22ZXSf7G5AQw
+      - DRONE_RUNNER_CAPACITY=3
       - DRONE_DEBUG=true
     restart: always
     depends_on:
