@@ -1,3 +1,5 @@
+> 当前配置针对 gogs git服务器做的配置，更多其他git服务器配置参考 [Server Reference](https://docs.drone.io/reference/server/)
+
 ## drone
 
 drone 是Go语言实现的持续集成CI软件，比 Jenkins 轻量，允许使用类似 `docker-compose` 的语法来定义自动化过程。
