@@ -1,4 +1,4 @@
-## 安装 Gogs
+# 安装 Gogs
 
 安装 gogs 使用这里使用[curder/docker-compose-gogs](https://github.com/curder/docker-compose-gogs)
 
