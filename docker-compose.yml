@@ -1,43 +1,89 @@
-version: "3"
+version: "3.8"
 services:
-  drone-server:
-    container_name: drone-server
-    image: drone/drone:latest
-    ports:
-      - 10080:80
-      - 10443:443
-    volumes:
-      - ./data/drone:/var/lib/drone/:rw
-    restart: always
-    environment:
-      # https://docs.drone.io/reference/server/
-      - DRONE_OPEN=true
-      - DRONE_AGENTS_ENABLED=true
-      - DRONE_GOGS=true
-      - DRONE_PROVIDER=gogs
-      - DRONE_GOGS_SKIP_VERIFY=false
-      - DRONE_GIT_ALWAYS_AUTH=false
-      - DRONE_GOGS_SERVER=http://192.168.11.20:3000
-      - DRONE_SERVER_HOST=192.168.11.20:10080
-      - DRONE_SERVER_PROTO=http
-      - DRONE_TLS_AUTOCERT=false
-      - DRONE_USER_CREATE=username:curder,admin:true
-      - DRONE_RPC_SECRET=jEsjIqrs5Sz6U9qocuUUkYq9D038ECOQ9FjwgLWohHBEJMmbYHJE22ZXSf7G5AQw
-      - DRONE_DATABASE_DATASOURCE=/var/lib/drone/drone.sqlite
-      - DRONE_DATABASE_DRIVER=sqlite3
-
-  drone-agent:
-    container_name: drone-agent
-    image: drone/agent:latest
-    restart: always
+  # Drone Runner container
+  runner:
+    container_name: runner
+    image: 'drone/drone-runner-docker:1.8.1'
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       # https://docs.drone.io/runners/docker/reference/
-      - DRONE_RPC_SERVER=http://192.168.11.20:10080
-      - DRONE_RPC_SECRET=jEsjIqrs5Sz6U9qocuUUkYq9D038ECOQ9FjwgLWohHBEJMmbYHJE22ZXSf7G5AQw
-      - DRONE_RUNNER_CAPACITY=3
-      - DRONE_DEBUG=true
-    restart: always
+      - DRONE_RPC_PROTO=${APP_PROTO}
+      - DRONE_RPC_HOST=${APP_HOST}
+      - DRONE_RPC_SECRET=${RPC_SECRET}
+      - DRONE_RUNNER_CAPACITY=${RUNNER_CAPACITY:-3}
+      - DRONE_DEBUG=${RUNNER_DEBUG}
+    networks:
+      - ci
+
+  # Drone Server container
+  server:
+    container_name: server
+    image: 'drone/drone:2.12.0'
+    ports:
+      - "${APP_PORT:-10080}:80"
+    restart: unless-stopped
+    environment:
+      # https://docs.drone.io/server/provider/gogs/
+      # - DRONE_OPEN=true
+      # - DRONE_AGENTS_ENABLED=true
+      # - DRONE_GOGS=true
+      # - DRONE_PROVIDER=gogs
+      - DRONE_GOGS_SKIP_VERIFY=false
+      - DRONE_GIT_ALWAYS_AUTH=false
+      - DRONE_GOGS_SERVER=${GOGS_SERVER}
+      - DRONE_SERVER_PROTO=${APP_PROTO:-http}
+      - DRONE_SERVER_HOST=${APP_HOST}
+      - DRONE_TLS_AUTOCERT=false
+      - DRONE_USER_CREATE=username:curder,admin:true
+      - DRONE_RPC_SECRET=${RPC_SECRET}
+      - DRONE_LOGS_DEBUG=true
+      - DRONE_CRON_DISABLED=true
+      - DRONE_REDIS_CONNECTION=redis://redis:6379
+      - DRONE_DATABASE_DRIVER=mysql
+      - DRONE_DATABASE_DATASOURCE=${DB_USERNAME}:${DB_PASSWORD}@tcp(db:3306)/${DB_DATABASE}?parseTime=true
     depends_on:
-      - drone-server
+      db:
+        condition: service_healthy
+    networks:
+      - ci
+
+  redis:
+    container_name: redis
+    image: 'redis:7.0.0'
+    networks:
+      - ci
+
+  db:
+    container_name: db
+    image: 'mysql/mysql-server:5.7.38'
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - "${FORWARD_DB_PORT:-33060}:3306"
+    volumes:
+      - 'db:/var/lib/mysql'
+      - './my.cnf:/etc/my.cnf'
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+      retries: 3
+      timeout: 5s
+    networks:
+      - ci
+
+# Docker Networks
+networks:
+  ci:
+    driver: bridge
+
+# Volumes
+volumes:
+  db:
+    driver: local
