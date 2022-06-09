@@ -43,8 +43,8 @@ cp .env.example .env
 
 启动之前可以通过 `docker-compose pull` 先拉取一下对应的镜像。
 
-```
-docker-compose up
+```bash
+docker-compose up -d
 ```
 
 ## reference
