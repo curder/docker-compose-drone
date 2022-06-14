@@ -1,1 +1,0 @@
-import{_ as e,c as i,o as r,d as t}from"./app.30a37c91.js";const f='{"title":"Drone","description":"","frontmatter":{},"headers":[],"relativePath":"index.md"}',o={name:"index.md"},n=t("",3),a=[n];function _(l,d,s,c,p,h){return r(),i("div",null,a)}var u=e(o,[["render",_]]);export{f as __pageData,u as default};

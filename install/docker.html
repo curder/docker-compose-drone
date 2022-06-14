@@ -6,8 +6,8 @@
     <title>安装 Docker | Drone ❤️ CI</title>
     <meta name="description" content="Using drone for gogs git server">
     <link rel="stylesheet" href="/docker-compose-drone/assets/style.f16093a6.css">
-    <link rel="modulepreload" href="/docker-compose-drone/assets/app.30a37c91.js">
-    <link rel="modulepreload" href="/docker-compose-drone/assets/install_docker.md.e7dcd0e5.lean.js">
+    <link rel="modulepreload" href="/docker-compose-drone/assets/app.455015e5.js">
+    <link rel="modulepreload" href="/docker-compose-drone/assets/install_docker.md.fc37da86.lean.js">
     
     <script>(()=>{const e=localStorage.getItem("vitepress-theme-appearance"),a=window.matchMedia("(prefers-color-scheme: dark)").matches;(!e||e==="auto"?a:e==="dark")&&document.documentElement.classList.add("dark")})();</script>
   <meta name="twitter:title" content="安装 Docker | Drone ❤️ CI">
@@ -24,7 +24,9 @@
 <span class="line"><span style="color:#A6ACCD;">                docker-selinux \</span></span>
 <span class="line"><span style="color:#A6ACCD;">                docker-engine-selinux \</span></span>
 <span class="line"><span style="color:#A6ACCD;">                docker-engine</span></span>
-<span class="line"></span></code></pre></div><p>鉴于国内网络问题，强烈建议使用国内源，官方源请在注释中查看，如果服务器在海外可以使用官方源。</p><p>执行下面的命令添加 yum 软件源：</p><div class="language-bash"><span class="copy"></span><pre><code><span class="line"><span style="color:#676E95;font-style:italic;"># 官方源</span></span>
+<span class="line"></span></code></pre></div><p>鉴于国内网络问题，强烈建议使用国内源，官方源请在注释中查看，如果服务器在海外可以使用官方源。</p><p>执行下面的命令添加 yum 软件源：</p><div class="language-bash"><span class="copy"></span><pre><code><span class="line"><span style="color:#A6ACCD;">sudo yum install -y yum-utils</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#676E95;font-style:italic;"># 官方源</span></span>
 <span class="line"><span style="color:#A6ACCD;">sudo yum-config-manager \</span></span>
 <span class="line"><span style="color:#A6ACCD;">     --add-repo \</span></span>
 <span class="line"><span style="color:#A6ACCD;">     https://download.docker.com/linux/centos/docker-ce.repo</span></span>
@@ -35,7 +37,7 @@
 <span class="line"><span style="color:#676E95;font-style:italic;">#    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span></span>
 <span class="line"><span style="color:#676E95;font-style:italic;">#</span></span>
 <span class="line"><span style="color:#676E95;font-style:italic;">#sudo sed -i &#39;s/download.docker.com/mirrors.aliyun.com\/docker-ce/g&#39; /etc/yum.repos.d/docker-ce.repo</span></span>
-<span class="line"></span></code></pre></div><h2 id="安装docker" tabindex="-1">安装Docker <a class="header-anchor" href="#安装docker" aria-hidden="true">#</a></h2><p>更新 yum 软件源缓存，并安装 docker-ce。</p><div class="language-bash"><span class="copy"></span><pre><code><span class="line"><span style="color:#A6ACCD;">sudo yum install -y docker-ce docker-ce-cli containerd.io</span></span>
+<span class="line"></span></code></pre></div><h2 id="安装docker" tabindex="-1">安装Docker <a class="header-anchor" href="#安装docker" aria-hidden="true">#</a></h2><p>更新 yum 软件源缓存，并安装 docker-ce。</p><div class="language-bash"><span class="copy"></span><pre><code><span class="line"><span style="color:#A6ACCD;">sudo yum install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin</span></span>
 <span class="line"></span></code></pre></div><h2 id="启动docker" tabindex="-1">启动Docker <a class="header-anchor" href="#启动docker" aria-hidden="true">#</a></h2><div class="language-bash"><span class="copy"></span><pre><code><span class="line"><span style="color:#A6ACCD;">sudo systemctl </span><span style="color:#82AAFF;">enable</span><span style="color:#A6ACCD;"> docker</span></span>
 <span class="line"><span style="color:#A6ACCD;">sudo systemctl start docker</span></span>
 <span class="line"></span></code></pre></div><h2 id="配置docker" tabindex="-1">配置Docker <a class="header-anchor" href="#配置docker" aria-hidden="true">#</a></h2><h3 id="建立-docker-用户组" tabindex="-1">建立 docker 用户组 <a class="header-anchor" href="#建立-docker-用户组" aria-hidden="true">#</a></h3><p>默认情况下，docker 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 root 用户和 docker 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 root 用户。因此，更好地做法是将需要使用 docker 的用户加入 docker 用户组。</p><p>建立 docker 组：</p><div class="language-bash"><span class="copy"></span><pre><code><span class="line"><span style="color:#A6ACCD;">sudo groupadd docker</span></span>
@@ -48,8 +50,8 @@
 <span class="line"><span style="color:#89DDFF;font-style:italic;">EOF</span></span>
 <span class="line"></span></code></pre></div><p>然后重新加载 sysctl.conf 即可</p><div class="language-bash"><span class="copy"></span><pre><code><span class="line"><span style="color:#A6ACCD;">sudo sysctl -p</span></span>
 <span class="line"></span></code></pre></div></div></div></main><footer class="VPDocFooter" data-v-b2cd70aa data-v-0ac2039c><div class="edit-info" data-v-0ac2039c><!----><!----></div><div class="prev-next" data-v-0ac2039c><div class="pager" data-v-0ac2039c><a class="pager-link prev" href="/docker-compose-drone/install/centos-initialization.html" data-v-0ac2039c><span class="desc" data-v-0ac2039c>Previous page</span><span class="title" data-v-0ac2039c>初始化CentOS</span></a></div><div class="has-prev pager" data-v-0ac2039c><a class="pager-link next" href="/docker-compose-drone/install/docker-compose.html" data-v-0ac2039c><span class="desc" data-v-0ac2039c>Next page</span><span class="title" data-v-0ac2039c>安装Docker Compose</span></a></div></div></footer></div></div></div></div></div><!----></div></div>
-    <script>__VP_HASH_MAP__ = JSON.parse("{\"config_drone.md\":\"7136e875\",\"index.md\":\"63a0a412\",\"install_centos-initialization.md\":\"6aca41ad\",\"install_docker-compose.md\":\"466eb927\",\"install_docker.md\":\"e7dcd0e5\",\"install_drone.md\":\"5aa42dbd\",\"install_gogs.md\":\"166cfbb2\"}")</script>
-    <script type="module" async src="/docker-compose-drone/assets/app.30a37c91.js"></script>
+    <script>__VP_HASH_MAP__ = JSON.parse("{\"config_drone.md\":\"1fc22129\",\"index.md\":\"079adaa9\",\"install_centos-initialization.md\":\"1abc09ec\",\"install_docker-compose.md\":\"afb02b06\",\"install_docker.md\":\"fc37da86\",\"install_drone.md\":\"0faf6715\",\"install_gogs.md\":\"4c336fbc\"}")</script>
+    <script type="module" async src="/docker-compose-drone/assets/app.455015e5.js"></script>
     
   </body>
 </html>
