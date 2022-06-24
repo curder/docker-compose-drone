@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as r,a}from"./app.c84ea946.js";const f=JSON.parse('{"title":"Drone","description":"","frontmatter":{},"headers":[],"relativePath":"index.md","lastUpdated":1654681346000}'),i={name:"index.md"},o=a("",3),n=[o];function _(l,d,s,c,p,h){return r(),t("div",null,n)}var u=e(i,[["render",_]]);export{f as __pageData,u as default};
