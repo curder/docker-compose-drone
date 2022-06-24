@@ -1,15 +1,22 @@
-export default {
+import {defineConfig} from 'vitepress'
+
+export default defineConfig({
     base: "/docker-compose-drone/",
-    title: "Drone ❤️ CI",
+    title: " Drone ❤️ CI",
     description: "Using drone for gogs git server",
+    lastUpdated: true,
     themeConfig: {
-        // editLink: {
-        //     pattern: 'https://github.com/curder/docker-compose-drone/edit/main/docs/:path',
-        //     text: '编辑当前页'
-        // },
-        // displayAllHeaders: false,
-        // sidebarDepth: 2,
-        // nav: [{text: "README", link: "/"}],
+        logo: "https://www.drone.io/images/logo2-5d91833e3b.svg",
+        siteTitle: "Drone CI",
+        outlineTitle: "章节导航",
+        lastUpdatedText: "最后更新时间",
+        editLink: {
+            pattern: "https://github.com/curder/docker-compose-drone/edit/master/docs/:path",
+            text: '编辑它'
+        },
+        socialLinks: [
+            {icon: 'github', link: 'https://github.com/curder/docker-compose-drone'}
+        ],
         sidebar: [{
             text: "安装",
             items: [
@@ -25,4 +32,4 @@ export default {
             ]
         }],
     }
-};
+});

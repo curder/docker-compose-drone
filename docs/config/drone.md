@@ -22,3 +22,20 @@ server {
     }
 }
 ```
+
+## 配置systemctl命令
+
+将项目下的 `drone-ci.service` 配置文件拷贝到 `/usr/lib/systemd/system/` 目录下。
+
+
+```bash
+cp drone-ci.service /usr/lib/systemd/system/
+
+systemctl enable drone-ci.service && systemctl start drone-ci.service
+```
+
+这样操作后续就可以开机自启动了。
+
+```bash
+systemctl status drone-ci.service  # 查看服务状态
+```
